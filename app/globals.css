@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #07070f;
+    --surface: #0f0f1a;
+    --surface-2: #161624;
+    --surface-3: #1e1e30;
+    --border: #25253a;
+    --border-2: #32324e;
+    --accent: #7c5cfc;
+    --accent-2: #fc5c7d;
+    --accent-3: #5cfcbc;
+    --accent-4: #fcb75c;
+    --text: #eeeeff;
+    --muted: #6868a0;
+    --dim: #3a3a60;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--text);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .font-syne { font-family: var(--font-syne), sans-serif; }
+  .font-mono-custom { font-family: var(--font-space-mono), monospace; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
