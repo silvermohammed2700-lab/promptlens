@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, useCallback, DragEvent, ChangeEvent } from "react";
 import { trackEvent } from "@/lib/analytics";
+import imageCompression from "browser-image-compression";
 
 interface ImageUploaderProps {
   onImageReady: (base64: string, mimeType: string, file: File) => void;
@@ -10,44 +11,35 @@ interface ImageUploaderProps {
 const SUPPORTED_FORMATS = [
   "image/jpeg", "image/png", "image/webp", "image/gif",
   "image/bmp", "image/tiff", "image/avif", "image/heic",
-  "image/svg+xml", "image/x-icon",
+  "image/svg+xml", "image/x-icon", "image/heif",
 ];
 
 const MAX_SIZE = 5 * 1024 * 1024;
 
-async function convertToJpeg(file: File): Promise<{ base64: string; mimeType: string }> {
-  const MAX = 2048;
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      let { width: w, height: h } = img;
-      if (w > MAX || h > MAX) {
-        if (w > h) { h = Math.round((h * MAX) / w); w = MAX; }
-        else { w = Math.round((w * MAX) / h); h = MAX; }
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url);
-      canvas.toBlob((blob) => {
-        if (!blob) { reject(new Error("Conversion failed")); return; }
-        const reader = new FileReader();
-        reader.onload = (e) => resolve({
-          base64: ((e.target!.result as string).split(",")[1]) ?? "",
-          mimeType: "image/jpeg",
-        });
-        reader.readAsDataURL(blob);
-      }, "image/jpeg", 0.92);
+async function processAndCompressFile(file: File): Promise<{ base64: string; mimeType: string, file: File }> {
+    const options = {
+      maxSizeMB: 5,
+      maxWidthOrHeight: 2048,
+      useWebWorker: true,
+      fileType: 'image/jpeg',
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
-    img.src = url;
-  });
+    const compressedFile = await imageCompression(file, options);
+    
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(compressedFile);
+        reader.onload = () => {
+            const base64 = (reader.result as string).split(',')[1];
+            if (base64) {
+                resolve({ base64, mimeType: 'image/jpeg', file: compressedFile });
+            } else {
+                reject(new Error("Failed to convert file to base64"));
+            }
+        };
+        reader.onerror = (error) => reject(error);
+    });
 }
+
 
 export function ImageUploader({ onImageReady, disabled }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -66,16 +58,16 @@ export function ImageUploader({ onImageReady, disabled }: ImageUploaderProps) {
     }
     const isNative = ["image/jpeg", "image/png", "image/webp"].includes(file.type);
     const needsConversion = !isNative;
-    setConverting(needsConversion);
+    setConverting(true);
     try {
-      const { base64, mimeType } = await convertToJpeg(file);
-      const previewUrl = `data:image/jpeg;base64,${base64}`;
+        const { base64, mimeType, file: processedFile } = await processAndCompressFile(file);
+        const previewUrl = `data:image/jpeg;base64,${base64}`;
       setPreview(previewUrl);
       if (needsConversion) {
         trackEvent({ name: "format_converted", params: { from: file.type, to: "image/jpeg" } });
       }
       trackEvent({ name: "image_uploaded", params: { format: file.type, size: file.size, converted: needsConversion } });
-      onImageReady(base64, mimeType, file);
+      onImageReady(base64, mimeType, processedFile);
     } catch {
       setError("Failed to process image. Please try a different file.");
     } finally {
