@@ -30,6 +30,9 @@ export const metadata: Metadata = {
   description: "Free image to prompt generator. Convert any image to AI prompts for Midjourney, DALL-E 3, Stable Diffusion & Flux. No login required.",
   keywords: ["image to prompt", "image to prompt generator", "ai image to prompt", "free image to prompt generator", "convert image to prompt", "midjourney prompt from image", "stable diffusion prompt generator", "ai image prompt generator"],
   metadataBase: new URL("https://promptlens.ai"),
+  verification: {
+    google: "ZWZCE6pL8Doyfbs9Dy4tjKPWyk3sU8o-h_6a6m4upe0",
+  },
   openGraph: {
     type: "website",
     siteName: "PromptLens",
@@ -40,12 +43,26 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import { getSiteSettings } from "@/lib/settings";
+
+// ... (imports)
+
+// ... (fonts)
+
+// ... (viewport)
+
+export const metadata: Metadata = {
+  // ... (metadata)
+};
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en" className={`${syne.variable} ${spaceMono.variable}`}>
       <body className="bg-[var(--background)] text-[var(--text)] min-h-screen flex flex-col">
         <JsonLd />
-        <AnalyticsScripts />
+        <AnalyticsScripts ga4Id={settings.googleAnalyticsId} />
         <Providers>
           <Header />
           <FreeBanner />

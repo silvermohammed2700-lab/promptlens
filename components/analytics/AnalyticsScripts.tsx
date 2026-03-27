@@ -6,7 +6,7 @@ interface AnalyticsScriptsProps {
 }
 
 export function AnalyticsScripts({ ga4Id, clarityId }: AnalyticsScriptsProps) {
-  const resolvedGa4 = ga4Id ?? process.env.NEXT_PUBLIC_GA4_ID;
+  const resolvedGa4 = ga4Id || process.env.NEXT_PUBLIC_GA4_ID || "G-1Z87YCC5TD";
   const resolvedClarity = clarityId ?? process.env.NEXT_PUBLIC_CLARITY_ID;
 
   return (
