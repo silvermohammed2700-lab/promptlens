@@ -10,6 +10,8 @@ import { JsonLd } from "@/components/analytics/JsonLd";
 import { Providers } from "@/components/layout/Providers";
 import { getSiteSettings } from "@/lib/settings";
 
+<meta name="google-site-verification" content="0ElHbO46Cx_9T2RsXYm75okqZdk2w7Ln_5-zv3c10-E" />
+
 const syne = Syne({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
