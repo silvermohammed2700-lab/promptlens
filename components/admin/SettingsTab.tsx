@@ -159,6 +159,18 @@ export function SettingsTab() {
         />
       </div>
 
+      {/* Google Analytics */}
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5">
+        <label className="block text-xs text-[var(--muted)] mb-1.5">Google Analytics 4 ID</label>
+        <input
+          type="text"
+          placeholder="G-XXXXXXXXXX"
+          value={form.googleAnalyticsId ?? ""}
+          onChange={(e) => set("googleAnalyticsId", e.target.value)}
+          className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--accent)] min-h-[40px]"
+        />
+      </div>
+
       <Button onClick={handleSave} loading={saving} size="lg">
         💾 Save Settings
       </Button>

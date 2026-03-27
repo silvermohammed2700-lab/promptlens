@@ -92,6 +92,7 @@ model SiteSettings {
   allowSignup     Boolean  @default(true)
   aiModel         String   @default("mistralai/mistral-small-3.1-24b-instruct:free")
   aiFallbackModel String   @default("google/gemma-3-27b-it:free")
+  googleAnalyticsId String @default("")
   adSettings      Json     @default("{}")
   updatedAt       DateTime @updatedAt
   updatedBy       String?
