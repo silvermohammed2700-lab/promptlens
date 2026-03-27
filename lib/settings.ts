@@ -9,10 +9,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   const now = Date.now();
   if (cachedSettings && now - cacheTime < CACHE_TTL) return cachedSettings;
 
-  let settings = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
-  if (!settings) {
-    settings = await prisma.siteSettings.create({ data: { id: "singleton" } });
-  }
+  let settings = await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: {},
+    create: { id: "singleton" },
+  });
 
   // Ensure aiModel is set to a working vision model
   const VISION_MODELS = [

@@ -93,6 +93,7 @@ export interface SiteSettings {
   allowSignup: boolean;
   aiModel: string;
   aiFallbackModel: string;
+  googleAnalyticsId: string;
   adSettings: AdSettings;
   updatedAt: Date;
   updatedBy: string | null;
