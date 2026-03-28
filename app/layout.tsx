@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   keywords: ["image to prompt", "image to prompt generator", "ai image to prompt", "free image to prompt generator", "convert image to prompt", "midjourney prompt from image", "stable diffusion prompt generator", "ai image prompt generator"],
   metadataBase: new URL("https://promptlens.ai"),
   verification: {
-    google: "ZWZCE6pL8Doyfbs9Dy4tjKPWyk3sU8o-h_6a6m4upe0",
+    google: "0ElHbO46Cx_9T2RsXYm75okqZdk2w7Ln_5-zv3c10-E",
   },
   openGraph: {
     type: "website",
